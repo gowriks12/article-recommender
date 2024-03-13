@@ -51,7 +51,7 @@ is_clicked = col1.button(label="Recommend")
 
 if is_clicked:
     # dataframe = recommender.recommend_articles(recom_df=recom_df, article = session.options)
-    top_publication_content, trending_articles, top_quick_reads, recommended = recommender.recommend_articles(article=session.options)
+    top_publication_content, trending_articles, top_quick_reads, recommended = recommender.recommend_articles(art=session.options)
 
 st.text("")
 st.text("")
@@ -70,6 +70,6 @@ st.text("Quick Read Recommendations")
 if top_quick_reads is not None:
     st.table(top_quick_reads['title'])
 
-st.text("Because You read ", session.option)
+st.text("Because You read ")
 if recommended is not None:
     st.table(recommended.index)

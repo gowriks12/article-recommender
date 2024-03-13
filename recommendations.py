@@ -86,10 +86,12 @@ class Recommendations:
         sims.sort_values(by="claps", ascending=False)
         return sims
 
-    def recommend_articles(self, article):
+    def recommend_articles(self, art):
         self.df = self.preprocess_data()
         recom_df = pd.read_csv("data/recom_df.csv", index_col=0)
-        article = recom_df.loc[self.df['title'][419]]
+        article = recom_df.loc[art[0]]
+        # print(article)
+        # article = recom_df.loc[self.df['title'][419]]
         top_publication_content = self.top_content()
         trending_articles = self.trending_article()
         top_quick_reads = self.popular_quick_reads()
@@ -101,7 +103,7 @@ class Recommendations:
 if __name__=="__main__":
     recommender = Recommendations()
     article = ["How ChatGPT Works: The Model Behind The\xa0Bot"]
-    top_publication_content, trending_articles, top_quick_reads, recommended = recommender.recommend_articles(article)
+    top_publication_content, trending_articles, top_quick_reads, recommended = recommender.recommend_articles(art=article)
     print("-----------------------------------------------")
     print("----------------Recommendations----------------")
     print("-----------------------------------------------")

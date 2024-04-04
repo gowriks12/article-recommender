@@ -36,6 +36,7 @@ st.text("")
 st.text("")
 
 session.options = st.multiselect(label="Select Article", options=article_list)
+print(session.options)
 
 st.text("")
 st.text("")
@@ -70,6 +71,6 @@ st.text("Quick Read Recommendations")
 if top_quick_reads is not None:
     st.table(top_quick_reads['title'])
 
-st.text("Because You read ", session.option)
+st.text("Recommendations based on selections")
 if recommended is not None:
     st.table(recommended.index)

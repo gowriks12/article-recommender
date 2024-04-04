@@ -22,7 +22,7 @@ class Recommendations:
         return cleaned_title
 
     def preprocess_data(self):
-        self.df['date'] = pd.to_datetime(self.df['date'])
+        self.df['date'] = pd.to_datetime(self.df['date'], dayfirst=True)
         self.df['title'] = self.df['title'].apply(self.fix_titles)
         self.df["claps"] = self.df["claps"].fillna(0)
         self.df["subtitle"] = self.df["subtitle"].fillna(self.df["title"])
@@ -80,20 +80,27 @@ class Recommendations:
 
     def content_based_recommendation(self, recom_df, article):
         similarities = recom_df.dot(article)
-        sims = pd.DataFrame(similarities.nlargest(10))
+        sims = pd.DataFrame(similarities.nlargest(11))
         sims = sims.merge(self.df[["title", "claps"]], how='inner', on="title")
         sims.set_index("title", drop=True, inplace=True)
         sims.sort_values(by="claps", ascending=False)
         return sims
 
     def recommend_articles(self, article):
+        print("In recommend articles---------------")
         self.df = self.preprocess_data()
+        print("Data Preprocessed-------------------")
         recom_df = pd.read_csv("data/recom_df.csv", index_col=0)
-        article = recom_df.loc[self.df['title'][419]]
+        # a = self.df[self.df['title'] == article[0]]
+        art = recom_df.loc[article[0]]
+        # print(art)
         top_publication_content = self.top_content()
         trending_articles = self.trending_article()
         top_quick_reads = self.popular_quick_reads()
-        recommended = self.content_based_recommendation(recom_df=recom_df, article=article)
+        recommended = self.content_based_recommendation(recom_df=recom_df, article=art)
+        # recomms = recommended.loc[1:]
+        recommended = recommended.drop(recommended.index[0])
+        print(recommended)
 
         return top_publication_content, trending_articles, top_quick_reads, recommended
 

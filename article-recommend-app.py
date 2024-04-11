@@ -35,13 +35,14 @@ st.text("")
 st.text("")
 st.text("")
 
-session.options = st.multiselect(label="Select Article", options=article_list)
+session.options = st.selectbox(label="Select Article", options=article_list)
+st.write("You Selected: ",session.options)
 print(session.options)
 
 st.text("")
 st.text("")
 
-session.slider_count = st.slider(label="Article Count", min_value=5, max_value=10)
+session.slider_count = st.slider(label="Article Count", min_value=3, max_value=10)
 
 st.text("")
 st.text("")
@@ -52,25 +53,71 @@ is_clicked = col1.button(label="Recommend")
 
 if is_clicked:
     # dataframe = recommender.recommend_articles(recom_df=recom_df, article = session.options)
-    top_publication_content, trending_articles, top_quick_reads, recommended = recommender.recommend_articles(article=session.options)
+    top_publication_content, trending_articles, top_quick_reads, recommended = recommender.recommend_articles(article=session.options, count=session.slider_count)
 
 st.text("")
 st.text("")
 st.text("")
 st.text("")
 
-st.text("Top Publication Content Recommendations")
-if top_publication_content is not None:
-    st.table(top_publication_content['title'])
-
-st.text("Trending Content Recommendations")
-if trending_articles is not None:
-    st.table(trending_articles['title'])
-
-st.text("Quick Read Recommendations")
-if top_quick_reads is not None:
-    st.table(top_quick_reads['title'])
-
-st.text("Recommendations based on selections")
+# st.title("Recommendations based on selections")
+st.subheader('Recommendations based on selections', divider='red')
 if recommended is not None:
-    st.table(recommended.index)
+    print(recommended)
+    st.data_editor(
+        recommended,
+        column_config={
+            "url": st.column_config.LinkColumn(
+                "Link", display_text="URL"
+            ),
+        },
+        hide_index=False,
+    )
+
+# st.title("Top Publication Content Recommendations")
+st.subheader('Top Publication Content Recommendations', divider='red')
+if top_publication_content is not None:
+    top_publication_content = top_publication_content[["title", "url", "publication", "claps"]]
+    print(top_publication_content)
+    st.data_editor(
+        top_publication_content,
+        column_config={
+            "url": st.column_config.LinkColumn(
+                "Link", display_text="URL"
+            ),
+        },
+        hide_index=True,
+    )
+    # st.table(top_publication_content['title'])
+
+# st.title("Trending Content Recommendations")
+st.subheader('Trending Content Recommendations', divider='red')
+if trending_articles is not None:
+    trending_articles = trending_articles[["title", "url", "publication", "claps"]]
+    print(trending_articles)
+    st.data_editor(
+        trending_articles,
+        column_config={
+            "url": st.column_config.LinkColumn(
+                "Link", display_text="URL"
+            ),
+        },
+        hide_index=True,
+    )
+    # st.table(trending_articles['title'])
+
+# st.title("Quick Read Recommendations")
+st.subheader('Quick Read Recommendations', divider='red')
+if top_quick_reads is not None:
+    top_quick_reads = top_quick_reads[["title", "url", "publication", "claps"]]
+    print(top_quick_reads)
+    st.data_editor(
+        top_quick_reads,
+        column_config={
+            "url": st.column_config.LinkColumn(
+                "Link", display_text="URL"
+            ),
+        },
+        hide_index=True,
+    )
+    # st.table(top_quick_reads['title'])

@@ -78,28 +78,29 @@ class Recommendations:
         recom_df.set_index(self.df['title'], inplace=True)
         recom_df.to_csv("data/recom_df.csv")
 
-    def content_based_recommendation(self, recom_df, article):
+    def content_based_recommendation(self, recom_df, article, count):
         similarities = recom_df.dot(article)
-        sims = pd.DataFrame(similarities.nlargest(11))
-        sims = sims.merge(self.df[["title", "claps"]], how='inner', on="title")
+        sims = pd.DataFrame(similarities.nlargest(count+1))
+        sims = sims.merge(self.df[["title", "claps", "url", "publication"]], how='inner', on="title")
         sims.set_index("title", drop=True, inplace=True)
         sims.sort_values(by="claps", ascending=False)
         return sims
 
-    def recommend_articles(self, article):
+    def recommend_articles(self, article, count):
         print("In recommend articles---------------")
         self.df = self.preprocess_data()
         print("Data Preprocessed-------------------")
         recom_df = pd.read_csv("data/recom_df.csv", index_col=0)
         # a = self.df[self.df['title'] == article[0]]
-        art = recom_df.loc[article[0]]
+        art = recom_df.loc[article]
         # print(art)
         top_publication_content = self.top_content()
         trending_articles = self.trending_article()
         top_quick_reads = self.popular_quick_reads()
-        recommended = self.content_based_recommendation(recom_df=recom_df, article=art)
+        recommended = self.content_based_recommendation(recom_df=recom_df, article=art, count=count)
         # recomms = recommended.loc[1:]
         recommended = recommended.drop(recommended.index[0])
+        recommended = recommended[["url","publication","claps"]]
         print(recommended)
 
         return top_publication_content, trending_articles, top_quick_reads, recommended
@@ -107,8 +108,9 @@ class Recommendations:
 
 if __name__=="__main__":
     recommender = Recommendations()
+    count =10
     article = ["How ChatGPT Works: The Model Behind The\xa0Bot"]
-    top_publication_content, trending_articles, top_quick_reads, recommended = recommender.recommend_articles(article)
+    top_publication_content, trending_articles, top_quick_reads, recommended = recommender.recommend_articles(article, count)
     print("-----------------------------------------------")
     print("----------------Recommendations----------------")
     print("-----------------------------------------------")

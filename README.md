@@ -1,6 +1,8 @@
 # Medium Article Recommender
 Content Based Recommendation System to recommend medium articles to users based on what they read earlier.
 
+![Logo](https://github.com/gowriks12/article-recommender/main/static/article-recommender-demo.gif)
+
 ## Steps to Setup
 
 Clone the repository
